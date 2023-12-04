@@ -35,13 +35,15 @@ instance HasTVars Type where
   freeTVars t     = case t of
     TInt -> []
     TBool -> []
-    (t1 :=> t2) -> freeTVars t1 ++ freeTVars t2
-    TVar id -> [id]
+    (t1 :=> t2) -> L.nub $ freeTVars t1 ++ freeTVars t2
+    TVar x -> [x]
     TList l -> freeTVars l
 
 -- | Free type variables of a poly-type (remove forall-bound vars)
 instance HasTVars Poly where
-  freeTVars s     = error "TBD: poly freeTVars"
+  freeTVars s     = case s of
+    Mono x -> freeTVars x
+
 
 -- | Free type variables of a type environment
 instance HasTVars TypeEnv where
