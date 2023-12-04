@@ -32,7 +32,12 @@ class HasTVars a where
 
 -- | Type variables of a type
 instance HasTVars Type where
-  freeTVars t     = error "TBD: type freeTVars"
+  freeTVars t     = case t of
+    TInt -> []
+    TBool -> []
+    (t1 :=> t2) -> freeTVars t1 ++ freeTVars t2
+    TVar id -> [id]
+    TList l -> freeTVars l
 
 -- | Free type variables of a poly-type (remove forall-bound vars)
 instance HasTVars Poly where
