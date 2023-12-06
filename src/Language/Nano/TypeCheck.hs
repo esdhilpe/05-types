@@ -43,6 +43,10 @@ instance HasTVars Type where
 instance HasTVars Poly where
   freeTVars s     = case s of
     Mono x -> freeTVars x
+    Forall id p -> L.filter a b
+                   where
+                    a = (\y -> y /= id)
+                    b = freeTVars p
 
 
 -- | Free type variables of a type environment
