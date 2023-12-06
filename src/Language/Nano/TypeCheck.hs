@@ -35,7 +35,7 @@ instance HasTVars Type where
   freeTVars t     = case t of
     TInt -> []
     TBool -> []
-    (t1 :=> t2) -> L.nub $ freeTVars t1 ++ freeTVars t2
+    t1 :=> t2 -> L.nub $ freeTVars t1 ++ freeTVars t2
     TVar x -> [x]
     TList l -> freeTVars l
 
@@ -91,12 +91,22 @@ class Substitutable a where
 -- | Apply substitution to type
 -- Part 1b
 instance Substitutable Type where  
-  apply sub t         = error "TBD: type apply"
+  apply sub t         = case t of
+    TInt -> TInt
+    TBool -> TBool
+    t1 :=> t2 -> apply sub t1 :=> apply sub t2
+    TVar x -> lookupTVar x sub
+    TList l -> list (apply sub l)
 
 -- | Apply substitution to poly-type
 -- Part 1b
 instance Substitutable Poly where    
-  apply sub s         = error "TBD: poly apply"
+  apply sub s         = case s of
+    Mono x -> Mono (apply sub x)
+    Forall id p -> Forall id m
+                   where
+                    temp = removeTVar id sub
+                    m = apply temp p
 
 -- | Apply substitution to (all poly-types in) another substitution
 instance Substitutable Subst where  
@@ -113,7 +123,9 @@ instance Substitutable TypeEnv where
 -- | Extend substitution with a new type assignment
 -- Part 1b
 extendSubst :: Subst -> TVar -> Type -> Subst
-extendSubst sub a t = error "TBD: extendSubst"
+extendSubst sub a t = (a,t):tail
+                        where
+                          tail = apply ((a,t):sub) sub
       
 --------------------------------------------------------------------------------
 -- Problem 2: Unification
