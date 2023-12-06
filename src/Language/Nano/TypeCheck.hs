@@ -66,10 +66,17 @@ extendTypeEnv x s gamma = (x,s) : gamma
 
 -- | Lookup a type variable in a substitution;
 --   if not present, return the variable unchanged
+-- Part 1b
+-- Base Case: If empty subst, return variable unchanged
 lookupTVar :: TVar -> Subst -> Type
-lookupTVar a sub = error "TBD: lookupTVar"
+-- Base Case:
+lookupTVar a [] = TVar a
+lookupTVar a ((x,y):sub) = 
+  if a == x then y
+  else lookupTVar a sub
 
 -- | Remove a type variable from a substitution
+-- Part 1b
 removeTVar :: TVar -> Subst -> Subst
 removeTVar a sub = error "TBD: removeTVar"
      
@@ -78,10 +85,12 @@ class Substitutable a where
   apply :: Subst -> a -> a
   
 -- | Apply substitution to type
+-- Part 1b
 instance Substitutable Type where  
   apply sub t         = error "TBD: type apply"
 
 -- | Apply substitution to poly-type
+-- Part 1b
 instance Substitutable Poly where    
   apply sub s         = error "TBD: poly apply"
 
@@ -98,6 +107,7 @@ instance Substitutable TypeEnv where
       (keys, vals) = unzip gamma
       
 -- | Extend substitution with a new type assignment
+-- Part 1b
 extendSubst :: Subst -> TVar -> Type -> Subst
 extendSubst sub a t = error "TBD: extendSubst"
       
