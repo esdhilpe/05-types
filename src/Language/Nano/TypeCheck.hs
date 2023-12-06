@@ -77,8 +77,12 @@ lookupTVar a ((x,y):sub) =
 
 -- | Remove a type variable from a substitution
 -- Part 1b
+-- Utilize .filter
+-- if x /= a, then (x,y) is in the list
+-- creating a new list containing pairs from sub which
+-- x is not equal to a.
 removeTVar :: TVar -> Subst -> Subst
-removeTVar a sub = error "TBD: removeTVar"
+removeTVar a sub = [(x, y) | (x, y) <- sub, x /= a]
      
 -- | Things to which type substitutions can be apply
 class Substitutable a where
